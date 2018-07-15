@@ -1,4 +1,4 @@
-package com.sureit.mymovies;
+package com.sureit.mymovies.view;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -16,6 +16,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sureit.mymovies.data.MovieList;
+import com.sureit.mymovies.R;
+import com.sureit.mymovies.adapter.MovieAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,10 +30,10 @@ import java.util.List;
 
 import am.appwise.components.ni.NoInternetDialog;
 
-import static com.sureit.mymovies.Constants.API_KEY;
-import static com.sureit.mymovies.Constants.BASE_URL_MOVIE;
-import static com.sureit.mymovies.Constants.POPULAR_MOVIES_URL;
-import static com.sureit.mymovies.Constants.TOP_RATED_MOVIES_URL;
+import static com.sureit.mymovies.data.Constants.API_KEY;
+import static com.sureit.mymovies.data.Constants.BASE_URL_MOVIE;
+import static com.sureit.mymovies.data.Constants.POPULAR_MOVIES_URL;
+import static com.sureit.mymovies.data.Constants.TOP_RATED_MOVIES_URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
                         JSONObject jo = array.getJSONObject(i);
 
-                        MovieList developers = new MovieList(jo.getString("title"), jo.getString("overview"),
+                        MovieList developers = new MovieList(jo.getLong("id"),jo.getString("title"), jo.getString("overview"),
                                 jo.getString("poster_path"),jo.getString("vote_average"),jo.getString("release_date"));
                         movieLists.add(developers);
 

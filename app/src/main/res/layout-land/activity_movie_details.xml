@@ -11,7 +11,7 @@
     android:padding="16dp"
     android:background="@drawable/wood"
     android:orientation="vertical"
-    tools:context="com.sureit.mymovies.MovieDetailsActivity">
+    tools:context="com.sureit.mymovies.view.MovieDetailsActivity">
 
     <TextView
         android:id="@+id/titleTextView"

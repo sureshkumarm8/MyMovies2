@@ -1,10 +1,11 @@
-package com.sureit.mymovies;
+package com.sureit.mymovies.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class MovieList implements Parcelable {
 
+    private long id;
     private String title;
     private String posterUrl;
     private String description;
@@ -12,6 +13,7 @@ public class MovieList implements Parcelable {
     private String releaseDate;
 
     protected MovieList(Parcel in) {
+        id=in.readLong();
         title = in.readString();
         posterUrl = in.readString();
         description = in.readString();
@@ -30,6 +32,10 @@ public class MovieList implements Parcelable {
             return new MovieList[size];
         }
     };
+
+    public long getId() {
+        return id;
+    }
 
     public String getTitle() {
         return title;
@@ -51,11 +57,12 @@ public class MovieList implements Parcelable {
         return releaseDate;
     }
 
-    public MovieList(String title, String description, String posterUrl, String vote_average, String releaseDate) {
+    public MovieList(long id, String title, String description, String posterUrl, String vote_average, String releaseDate) {
+        this.id = id;
         this.title = title;
         this.posterUrl = posterUrl;
         this.description = description;
-        this.vote_average=vote_average;
+        this.vote_average = vote_average;
         this.releaseDate = releaseDate;
     }
 
@@ -66,6 +73,7 @@ public class MovieList implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(title);
         dest.writeString(posterUrl);
         dest.writeString(description);

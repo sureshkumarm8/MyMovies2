@@ -1,4 +1,4 @@
-package com.sureit.mymovies;
+package com.sureit.mymovies.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
+import com.sureit.mymovies.data.Constants;
+import com.sureit.mymovies.view.MovieDetailsActivity;
+import com.sureit.mymovies.data.MovieList;
+import com.sureit.mymovies.R;
 
 import java.util.List;
 
@@ -60,13 +64,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             public void onClick(View v) {
                 MovieList movieList1 = movieLists.get(position);
                 Intent skipIntent = new Intent(v.getContext(), MovieDetailsActivity.class);
-//                skipIntent.putExtra(KEY_NAME, movieList1.getTitle());
-//                skipIntent.putExtra(KEY_DESCRIPTION, movieList1.getDescription());
-//                skipIntent.putExtra(KEY_IMAGE,"https://image.tmdb.org/t/p/w185/"+ movieList1.getPosterUrl());
-//                skipIntent.putExtra(KEY_VOTE_AVERAGE,movieList1.getVote_average());
-//                skipIntent.putExtra(KEY_RELEASE_DATE,movieList1.getReleaseDate());
                 skipIntent.putExtra(Constants.PARCEL_KEY,
-                        new MovieList(movieList1.getTitle(),movieList1.getDescription(),movieList1.getPosterUrl(),
+                        new MovieList(movieList1.getId() ,movieList1.getTitle(),movieList1.getDescription(),movieList1.getPosterUrl(),
                                 movieList1.getVote_average(),movieList1.getReleaseDate()));
                 v.getContext().startActivity(skipIntent);
             }

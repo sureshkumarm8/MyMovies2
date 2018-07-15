@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         tools:replace="android:theme"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailsActivity"
+            android:name=".view.MovieDetailsActivity"
             android:theme="@style/AppTheme"
             xmlns:tools="http://schemas.android.com/tools"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>

@@ -12,7 +12,7 @@ public class TrailerList implements Parcelable{
         this.trailerKey = trailerKey;
     }
 
-    protected TrailerList(Parcel in) {
+    private TrailerList(Parcel in) {
         trailerItem = in.readString();
         trailerKey = in.readString();
     }

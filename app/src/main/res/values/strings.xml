@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MyMovies2</string>
+    <string name="author">Author :</string>
+    <string name="release_date">Release Date :</string>
+    <string name="ratings">Ratings :</string>
+    <string name="_0_0">0.0</string>
+    <string name="description">Description :</string>
+    <string name="trailers">Trailers :</string>
+    <string name="reviews">Reviews :</string>
 </resources>

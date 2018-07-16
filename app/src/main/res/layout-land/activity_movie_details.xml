@@ -1,120 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true">
-<RelativeLayout
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/wood"
-    android:orientation="vertical"
-    tools:context="com.sureit.mymovies.view.MovieDetailsActivity">
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="173dp"
+    <RelativeLayout
+
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/posterImageView"
-        android:layout_marginStart="191dp"
-        android:textColor="#ffffff"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        tools:ignore="UnknownId"
-        tools:text="Movie Title"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="191dp" />
+        android:background="@drawable/wood"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context="com.sureit.mymovies.view.MovieDetailsActivity">
+        <RelativeLayout
+            android:id="@+id/topRL"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
 
-    <ImageView
-        android:id="@+id/posterImageView"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="11dp"
-        android:src="@drawable/avatar1"
-        android:layout_marginStart="17dp"
-        android:layout_marginLeft="17dp" />
+            <ImageView
+                android:id="@+id/posterImageView"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:src="@drawable/avatar1" />
 
-
-    <TextView
-        android:id="@+id/tVdescriptionTitle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/titleTextView"
-        android:layout_marginEnd="71dp"
-        android:text="Description :"
-        android:textColor="#ffffff"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="71dp" />
-
-    <TextView
-        android:id="@+id/tVdescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tVdescriptionTitle"
-        android:layout_toEndOf="@+id/titleTextView"
-        android:paddingLeft="15sp"
-        android:text="description"
-        android:textColor="#ffffff"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_toRightOf="@+id/titleTextView" />
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="173dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/posterImageView"
+                android:textColor="#ffffff"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                tools:ignore="UnknownId"
+                tools:text="Movie Title"
+                android:layout_toRightOf="@+id/posterImageView" />
 
 
-    <TextView
-        android:id="@+id/tVRelease"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/titleTextView"
-        android:layout_marginTop="163dp"
-        android:text="Release Date : "
-        android:textColor="#ffffff"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_alignLeft="@+id/titleTextView" />
+            <TextView
+                android:id="@+id/tVRelease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/titleTextView"
+                android:layout_marginBottom="56dp"
+                android:text="@string/release_date"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_alignLeft="@+id/titleTextView" />
 
-    <TextView
-        android:id="@+id/tVRatings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/posterImageView"
-        android:layout_alignStart="@+id/titleTextView"
-        android:text="Ratings : "
-        android:textColor="#ffffff"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_alignLeft="@+id/titleTextView" />
+            <TextView
+                android:id="@+id/tVRatings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/titleTextView"
+                android:layout_marginBottom="14dp"
+                android:text="@string/ratings"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_alignLeft="@+id/titleTextView" />
 
-    <TextView
-        android:id="@+id/tVreleaseDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tVRelease"
-        android:layout_toEndOf="@+id/tVRelease"
-        android:layout_toRightOf="@+id/tVRelease"
-        android:text="0.0"
-        android:textColor="#ffffff"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tVreleaseDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tVRelease"
+                android:layout_toEndOf="@+id/tVRelease"
+                android:text="@string/_0_0"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/tVRelease" />
 
-    <TextView
-        android:id="@+id/tVRatVal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tVRatings"
-        android:layout_toEndOf="@+id/tVRelease"
-        android:text="0.0"
-        android:textColor="#ffffff"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_toRightOf="@+id/tVRelease" />
+            <TextView
+                android:id="@+id/tVRatVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tVRatings"
+                android:layout_toEndOf="@+id/tVRatings"
+                android:text="@string/_0_0"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/tVRatings" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/middleRL"
+            android:layout_below="@+id/topRL"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/tVdescriptionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:gravity="left"
+                android:text="@string/description"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_alignParentLeft="true"
+                tools:ignore="RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/tVdescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tVdescriptionTitle"
+                android:paddingLeft="15sp"
+                android:text="@string/description"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="15sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/tVtrailer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tVdescription"
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:text="@string/trailers"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_alignParentLeft="true"
+                tools:ignore="RtlHardcoded" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/trailerLL"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_below="@+id/middleRL"
+            android:layout_centerHorizontal="true">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/trailerRV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tVreviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/trailerLL"
+            android:layout_marginTop="10dp"
+            android:gravity="left"
+            android:text="@string/reviews"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"
+            tools:ignore="RtlHardcoded" />
+        <LinearLayout
+            android:id="@+id/reviewsLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tVreviews">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/reviewsRV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

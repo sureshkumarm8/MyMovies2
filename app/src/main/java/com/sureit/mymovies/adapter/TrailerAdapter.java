@@ -1,5 +1,6 @@
 package com.sureit.mymovies.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,7 +41,7 @@ public class TrailerAdapter extends RecyclerView.Adapter <TrailerAdapter.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         // this method will bind the data to the ViewHolder from whence it'll be shown to other Views
 
         final TrailerList trailersList = trailerLists.get(position);
@@ -67,14 +68,15 @@ public class TrailerAdapter extends RecyclerView.Adapter <TrailerAdapter.ViewHol
         return trailerLists.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView videoViewTrailer;
-        public RelativeLayout relativeLayout2;
-        public ViewHolder(View itemView) {
+        RelativeLayout relativeLayout2;
+
+        ViewHolder(View itemView) {
             super(itemView);
             videoViewTrailer = itemView.findViewById(R.id.videoViewTrailer);
-            relativeLayout2 = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutRV2);
+            relativeLayout2 = itemView.findViewById(R.id.relativeLayoutRV2);
         }
     }
 }

@@ -17,10 +17,10 @@ The purpose of this project was to built an app that helps users discover popula
 NOTE : Insert Your API_KEY in gradle.properties
 
 <p align="center">
-  <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies/blob/master/screenshots/popular_movies.png">
+  <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies2/blob/master/screenshots/popular_movies.png">
 </p>
 <p align="center">
-  <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies/blob/master/screenshots/sorting_menu.png">
+  <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies2/blob/master/screenshots/sorting_menu.png">
 </p>
 <p align="center">
   <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies2/blob/master/screenshots/Movie%20Details%20Activity.png">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/wood"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -9,34 +10,60 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/wood"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="6dp"
         tools:context="com.sureit.mymovies.view.MovieDetailsActivity">
         <RelativeLayout
-            android:id="@+id/topRL"
+            android:id="@+id/bannerRL"
+            android:background="@drawable/wood"
             android:layout_width="match_parent"
+            android:layout_height="260dp">
+            <ImageView
+                android:contentDescription="@string/banner_landscape"
+                android:id="@+id/posterBanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/empty" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/topRL"
+            android:background="@drawable/wood"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/bannerRL"
             android:layout_height="200dp">
 
             <ImageView
+                android:contentDescription="@string/empty_land"
                 android:id="@+id/posterImageView"
                 android:layout_width="150dp"
                 android:layout_height="200dp"
-                android:src="@drawable/avatar1" />
+                android:src="@drawable/empty" />
 
             <TextView
                 android:id="@+id/titleTextView"
-                android:layout_width="173dp"
+                android:layout_width="403dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/posterImageView"
+                android:layout_marginTop="41dp"
                 android:textColor="#ffffff"
                 android:textSize="26sp"
                 android:textStyle="bold"
                 tools:ignore="UnknownId"
                 tools:text="Movie Title"
-                android:layout_toRightOf="@+id/posterImageView" />
+                android:layout_alignParentRight="true" />
 
+            <ImageView
+                android:contentDescription="@string/favorite_icon_land"
+                android:id="@+id/favIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/titleTextView"
+                android:layout_marginBottom="65dp"
+                android:background="@drawable/fav_empty"
+                android:layout_alignLeft="@+id/titleTextView" />
 
             <TextView
                 android:id="@+id/tVRelease"
@@ -44,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignStart="@+id/titleTextView"
-                android:layout_marginBottom="56dp"
+                android:layout_marginBottom="40dp"
                 android:text="@string/release_date"
                 android:textColor="#ffffff"
                 android:textSize="14sp"
@@ -87,13 +114,30 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_toRightOf="@+id/tVRatings" />
+
+            <TextView
+                android:id="@+id/tVfav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/favIcon"
+                android:layout_toEndOf="@+id/favIcon"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="4dp"
+                android:text="@string/add_to_favorites"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:layout_toRightOf="@+id/favIcon" />
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/middleRL"
             android:layout_below="@+id/topRL"
             android:layout_marginTop="5dp"
+            android:paddingLeft="12sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingStart="12sp"
+            tools:ignore="RtlSymmetry">
 
             <TextView
                 android:id="@+id/tVdescriptionTitle"
@@ -158,6 +202,7 @@
             android:id="@+id/tVreviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="12sp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/trailerLL"
             android:layout_marginTop="10dp"
@@ -167,7 +212,7 @@
             android:textSize="15sp"
             android:textStyle="bold"
             android:layout_alignParentLeft="true"
-            tools:ignore="RtlHardcoded" />
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
         <LinearLayout
             android:id="@+id/reviewsLL"
             android:layout_width="match_parent"

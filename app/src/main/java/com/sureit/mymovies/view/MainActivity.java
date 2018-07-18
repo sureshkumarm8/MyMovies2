@@ -1,6 +1,8 @@
 package com.sureit.mymovies.view;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,15 +18,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.sureit.mymovies.data.MovieList;
 import com.sureit.mymovies.R;
 import com.sureit.mymovies.adapter.MovieAdapter;
+import com.sureit.mymovies.data.MovieList;
+import com.sureit.mymovies.db.Movie;
+import com.sureit.mymovies.db.MovieDao;
+import com.sureit.mymovies.db.MovieDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,22 +48,33 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private List<MovieList> movieLists;
 
+    private MovieDatabase movieDatabase;
+    private MovieDao mMovieDao;
+    private Movie movie;
+    private boolean update;
+    private MovieList movieList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewMovie);
+        recyclerView = findViewById(R.id.recyclerViewMovie);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }else {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }
         movieLists = new ArrayList<>();
         noInternetDialog = new NoInternetDialog.Builder(this).build();
-        try {
-            loadUrlData(BASE_URL_MOVIE);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Log.e(LOG_TAG, e.getMessage(), e);
-        }
+
+        mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, "db-movies")
+                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .build()
+                .getMovieDao();
+
+        loadUrlData(BASE_URL_MOVIE);
     }
 
     @Override
@@ -75,26 +90,22 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.popular:
                 item.setChecked(true);
-                try {
-                    noInternetDialog = new NoInternetDialog.Builder(this).build();
-                    movieLists.clear();
-                    loadUrlData(POPULAR_MOVIES_URL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
+                noInternetDialog = new NoInternetDialog.Builder(this).build();
+                movieLists.clear();
+                loadUrlData(POPULAR_MOVIES_URL);
                 return true;
 
             case R.id.rated:
                 item.setChecked(true);
-                try {
-                    noInternetDialog = new NoInternetDialog.Builder(this).build();
-                    movieLists.clear();
-                    loadUrlData(TOP_RATED_MOVIES_URL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
+                noInternetDialog = new NoInternetDialog.Builder(this).build();
+                movieLists.clear();
+                loadUrlData(TOP_RATED_MOVIES_URL);
+                return true;
+
+            case R.id.myfav:
+                item.setChecked(true);
+                movieLists.clear();
+                loadFavMovies();
                 return true;
 
             default:
@@ -102,7 +113,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadUrlData(String movieurl) throws MalformedURLException {
+    private void loadFavMovies() {
+        List<Movie> movies=new ArrayList<>(mMovieDao.getMovies());
+        for(int i=0;i<movies.size();i++){
+            Long id = movies.get(i).getMovie_id();
+            String title = movies.get(i).getTitle();
+            String description  = movies.get(i).getContent();
+            String posterPath = movies.get(i).getPosterUrl();
+            String vote_avg = movies.get(i).getVote_average();
+            String releaseDate = movies.get(i).getReleasedate();
+            MovieList movieList = new MovieList(id,title, description,posterPath,vote_avg ,releaseDate);
+            movieLists.add(movieList);
+        }
+        adapter = new MovieAdapter(movieLists, getApplicationContext());
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void loadUrlData(String movieurl) {
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -113,21 +142,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-
-
                 try {
 
                     JSONObject jsonObject = new JSONObject(response);
-
                     JSONArray array = jsonObject.getJSONArray("results");
 
                     for (int i = 0; i < array.length(); i++){
 
                         JSONObject jo = array.getJSONObject(i);
 
-                        MovieList developers = new MovieList(jo.getLong("id"),jo.getString("title"), jo.getString("overview"),
+                        MovieList movieList = new MovieList(jo.getLong("id"),jo.getString("title"), jo.getString("overview"),
                                 jo.getString("poster_path"),jo.getString("vote_average"),jo.getString("release_date"));
-                        movieLists.add(developers);
+                        movieLists.add(movieList);
 
                     }
 
@@ -152,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

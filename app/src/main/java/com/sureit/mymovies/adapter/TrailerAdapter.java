@@ -29,6 +29,8 @@ public class TrailerAdapter extends RecyclerView.Adapter <TrailerAdapter.ViewHol
 
     private final String YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%s/0.jpg";
 
+    public TrailerAdapter(){}
+
     public TrailerAdapter(List<TrailerList> trailerLists, Context context){
         this.trailerLists = trailerLists;
         this.context = context;

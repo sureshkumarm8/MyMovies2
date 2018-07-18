@@ -11,4 +11,7 @@ public class Constants {
     public static final String API_KEY = BuildConfig.MovieSecAPIKEY;
 
     public static final String PARCEL_KEY="MovieParcel";
+
+    public static final String TABLE_NAME_NOTE ="favmovies";
+    public static final String DB_NAME ="favmoviesdb.db";
 }

@@ -1,12 +1,15 @@
 package com.sureit.mymovies.view;
 
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +21,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
+import com.sureit.mymovies.R;
 import com.sureit.mymovies.adapter.ReviewsAdapter;
+import com.sureit.mymovies.adapter.TrailerAdapter;
 import com.sureit.mymovies.data.Constants;
 import com.sureit.mymovies.data.MovieList;
-import com.sureit.mymovies.R;
 import com.sureit.mymovies.data.ReviewsList;
 import com.sureit.mymovies.data.TrailerList;
-import com.sureit.mymovies.adapter.TrailerAdapter;
+import com.sureit.mymovies.db.Movie;
+import com.sureit.mymovies.db.MovieDao;
+import com.sureit.mymovies.db.MovieDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,10 +55,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private ReviewsAdapter adapter2;
     private RecyclerView recyclerViewRV;
 
+    private TextView favTV;
+    private ImageView favView;
+    private boolean isFavorite = false;
+
+    private MovieDatabase movieDatabase;
+    private MovieDao mMovieDao;
+    private Movie movie;
+    private boolean update;
+    private MovieList movieList;
+    public static String stringT;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, "db-movies")
+                .allowMainThreadQueries()   //Allows room to do operation on main thread
+                .build()
+                .getMovieDao();
 
         setupUI();
 
@@ -60,11 +82,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void setupUI(){
         noInternetDialog = new NoInternetDialog.Builder(this).build();
+        ImageView posterBannerIV= findViewById(R.id.posterBanner);
         ImageView posterImageView = findViewById(R.id.posterImageView);
         TextView titleTextView = findViewById(R.id.titleTextView);
         TextView description = findViewById(R.id.tVdescription);
         TextView releaseTV= findViewById(R.id.tVreleaseDate);
         TextView ratingTV= findViewById(R.id.tVRatVal);
+        favTV = findViewById(R.id.tVfav);
 
         ImageView trailerVV = findViewById(R.id.videoViewTrailer);
         recyclerViewTr = findViewById(R.id.trailerRV);
@@ -88,18 +112,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         Bundle data=getIntent().getExtras();
         assert data != null;
-        MovieList movieList= data.getParcelable(Constants.PARCEL_KEY);
+        movieList= data.getParcelable(Constants.PARCEL_KEY);
         assert movieList != null;
 
         idVal = movieList.getId();
         final String titleText = movieList.getTitle();
         String image = "https://image.tmdb.org/t/p/w185/"+ movieList.getPosterUrl();
+        String imageB = "https://image.tmdb.org/t/p/w342/"+ movieList.getPosterUrl();
         final String descriptionText = movieList.getDescription();
         final String ratings =movieList.getVote_average()+" / 10";
         final String releaseDate= movieList.getReleaseDate();
 
         loadTrailers();
         loadReviews();
+
+        Picasso.with(this)
+                .load(imageB)
+                .into(posterBannerIV);
 
         Picasso.with(this)
                 .load(image)
@@ -110,6 +139,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
         releaseTV.setText(releaseDate);
         description.setText(descriptionText);
 
+        favView = findViewById(R.id.favIcon);
+        favView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFavorite(v);
+            }
+        });
+        if(mMovieDao.getMovieWithId(idVal)){
+            favView.setImageResource(R.drawable.fav_fill);
+            favTV.setVisibility(View.GONE);
+            isFavorite = true;
+        }
 
     }
 
@@ -172,8 +213,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-
-
                 try {
 
                     JSONObject jsonObject = new JSONObject(response);
@@ -210,6 +249,48 @@ public class MovieDetailsActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+
+    private void toggleFavorite(View v) {
+
+        if (!isFavorite) {
+            Movie movie = new Movie();
+            movie.setTitle(movieList.getTitle());
+            movie.setContent(movieList.getDescription());
+            movie.setMovie_id(movieList.getId());
+            movie.setPosterUrl(movieList.getPosterUrl());
+            movie.setReleasedate(movieList.getReleaseDate());
+            movie.setVote_average(movieList.getVote_average());
+            //Insert to database
+            try {
+                mMovieDao.insert(movie);
+                setResult(RESULT_OK);
+            } catch (SQLiteConstraintException e) {
+                Toast.makeText(MovieDetailsActivity.this, "A movie with same details already exists.", Toast.LENGTH_SHORT).show();
+            }
+            favView.setImageResource(R.drawable.fav_fill);
+            favTV.setVisibility(View.GONE);
+            Toast.makeText(this,"Added to favorites", Toast.LENGTH_SHORT).show();
+            isFavorite = true;
+        }else {
+            Movie movie = new Movie();
+            movie.setTitle(movieList.getTitle());
+            movie.setContent(movieList.getDescription());
+            movie.setMovie_id(movieList.getId());
+            movie.setPosterUrl(movieList.getPosterUrl());
+            movie.setReleasedate(movieList.getReleaseDate());
+            movie.setVote_average(movieList.getVote_average());
+            mMovieDao.delete(movie);
+            String id= String.valueOf(movie.getMovie_id());
+            favTV.setVisibility(View.VISIBLE);
+            favView.setImageResource(R.drawable.fav_empty);
+
+            setResult(RESULT_OK);
+            Toast.makeText(this,"Removed from favorites", Toast.LENGTH_SHORT).show();
+            isFavorite = false;
+        }
+    }
+
+
 
     @Override
     protected void onDestroy() {

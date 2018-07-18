@@ -7,9 +7,12 @@
     <item
         android:checked="true"
         android:id="@+id/popular"
-        android:title="Sort By Popular"/>
+        android:title="@string/sort_by_popular"/>
     <item
         android:id="@+id/rated"
-        android:title="Sort By Ratings"/>
+        android:title="@string/sort_by_ratings"/>
+    <item
+        android:id="@+id/myfav"
+        android:title="@string/my_favourites"/>
 </group>
 </menu>

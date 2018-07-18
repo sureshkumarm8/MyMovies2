@@ -12,9 +12,18 @@ This is Popular Movies Stage 2 of Udacity's Android Developer Nanodegree. The pu
 <p>Created a database to store the names and ids of the user's favorite movies (and optionally, the rest of the information needed to display their favorites collection while offline).<p/>
 <p>Modified the existing sorting criteria for the main view to include an additional pivot to show their favorites collection.<p/>
 
+NOTE : Insert Your API_KEY in gradle.properties
+
 <p align="center">
   <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies/blob/master/screenshots/popular_movies.png">
 </p>
 <p align="center">
   <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies/blob/master/screenshots/sorting_menu.png">
 </p>
+<p align="center">
+  <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies2/blob/master/screenshots/Movie%20Details%20Activity.png">
+</p>
+<p align="center">
+  <img width="460" height="720" src="https://github.com/sureshkumarm8/MyMovies2/blob/master/screenshots/Trailers%20and%20Reviews.png">
+</p>
+

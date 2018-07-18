@@ -1,9 +1,11 @@
 # MyMovies2
- It fetches themoviedb.org API to display the movies data, that way the content provided is always up-to-date and relevant.
 
-Project Overview
-Welcome to Popular Movies! In this second and final stage, added additional functionality to the app you built in Stage 1.
-This is Popular Movies Stage 2 of Udacity's Android Developer Nanodegree. The purpose of this project was to built an app that helps users discover popular and top rated movies on the web.
+
+<p>Project Overview<p/>
+<p>Welcome to Popular Movies! <p/>
+This is Popular Movies Stage 2 of Udacity's Android Developer Nanodegree.
+In this second and final stage, added additional functionality to the app you built in Stage 1.
+The purpose of this project was to built an app that helps users discover popular and top rated movies on the web. It fetches themoviedb.org API to display the movies data, that way the content provided is always up-to-date and relevant.
 
 
 <p>Allow users to view and play trailers ( either in the youtube app or a web browser).<p/>

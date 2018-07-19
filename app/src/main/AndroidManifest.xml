@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:replace="android:theme"
+        android:fullBackupContent="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.MainActivity">
+        <activity android:name="com.sureit.mymovies.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.MovieDetailsActivity"
+            android:name="com.sureit.mymovies.view.MovieDetailsActivity"
             android:theme="@style/AppTheme"
             xmlns:tools="http://schemas.android.com/tools"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>

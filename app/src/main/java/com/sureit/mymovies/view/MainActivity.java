@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.sureit.mymovies.R;
 import com.sureit.mymovies.adapter.MovieAdapter;
+import com.sureit.mymovies.data.Constants;
 import com.sureit.mymovies.data.MovieList;
 import com.sureit.mymovies.db.Movie;
 import com.sureit.mymovies.db.MovieDao;
@@ -36,6 +38,7 @@ import am.appwise.components.ni.NoInternetDialog;
 
 import static com.sureit.mymovies.data.Constants.API_KEY;
 import static com.sureit.mymovies.data.Constants.BASE_URL_MOVIE;
+import static com.sureit.mymovies.data.Constants.PARCEL_KEY;
 import static com.sureit.mymovies.data.Constants.POPULAR_MOVIES_URL;
 import static com.sureit.mymovies.data.Constants.TOP_RATED_MOVIES_URL;
 
@@ -74,7 +77,20 @@ public class MainActivity extends AppCompatActivity {
                 .build()
                 .getMovieDao();
 
-        loadUrlData(BASE_URL_MOVIE);
+        if(savedInstanceState!=null){
+            if(savedInstanceState.containsKey(PARCEL_KEY)) {
+                movieLists = savedInstanceState.getParcelableArrayList(PARCEL_KEY);
+                adapter = new MovieAdapter(movieLists, getApplicationContext());
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        }
+        if(!Constants.FAV_ROT){
+            loadUrlData(BASE_URL_MOVIE);
+            Constants.FAV_ROT=false;
+        }
+
+
     }
 
     @Override
@@ -105,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.myfav:
                 item.setChecked(true);
                 movieLists.clear();
+                Constants.FAV_ROT = true;
                 loadFavMovies();
                 return true;
 
@@ -178,6 +195,16 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(PARCEL_KEY, (ArrayList<? extends
+                Parcelable>) movieLists);
+    }
+
 
     @Override
     protected void onDestroy() {

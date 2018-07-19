@@ -18,4 +18,5 @@ public class Constants {
     public static final String POSTER_BASE_URL2 = "https://image.tmdb.org/t/p/w342/";
     public static final String REVIEW_SEG = "/reviews?api_key=";
     public static final String TRAILER_SEG = "/videos?api_key=";
+    public static  boolean FAV_ROT = false;
 }

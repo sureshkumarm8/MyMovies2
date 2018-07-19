@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,8 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import am.appwise.components.ni.NoInternetDialog;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.sureit.mymovies.data.Constants.API_KEY;
 
@@ -51,21 +48,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
     NoInternetDialog noInternetDialog;
     private List<TrailerList> trailerLists;
     private TrailerAdapter adapter;
+    private RecyclerView recyclerViewTr;
     private long idVal;
 
     private List<ReviewsList> reviewsLists;
     private ReviewsAdapter adapter2;
-    @BindView(R.id.posterBanner) ImageView posterBannerIV;
-    @BindView(R.id.posterImageView) ImageView posterImageView ;
-    @BindView(R.id.titleTextView)TextView titleTextView ;
-    @BindView(R.id.tVdescription)TextView description ;
-    @BindView(R.id.tVreleaseDate)TextView releaseTV;
-    @BindView(R.id.tVRatVal) TextView ratingTV;
-    @BindView(R.id.tVfav) TextView favTV ;
-    @BindView(R.id.reviewsRV) RecyclerView recyclerViewRV ;
-    @BindView(R.id.videoViewTrailer) ImageView trailerVV;
-    @BindView(R.id.trailerRV) RecyclerView recyclerViewTr;
+    private RecyclerView recyclerViewRV;
 
+    private TextView favTV;
     private ImageView favView;
     private boolean isFavorite = false;
 
@@ -81,8 +71,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        ButterKnife.bind(this);
-
         mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, "db-movies")
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build()
@@ -94,13 +82,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void setupUI(){
         noInternetDialog = new NoInternetDialog.Builder(this).build();
+        ImageView posterBannerIV= findViewById(R.id.posterBanner);
+        ImageView posterImageView = findViewById(R.id.posterImageView);
+        TextView titleTextView = findViewById(R.id.titleTextView);
+        TextView description = findViewById(R.id.tVdescription);
+        TextView releaseTV= findViewById(R.id.tVreleaseDate);
+        TextView ratingTV= findViewById(R.id.tVRatVal);
+        favTV = findViewById(R.id.tVfav);
 
+        ImageView trailerVV = findViewById(R.id.videoViewTrailer);
+        recyclerViewTr = findViewById(R.id.trailerRV);
         recyclerViewTr.setHasFixedSize(false);
         recyclerViewTr.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         recyclerViewTr.setItemAnimator(new DefaultItemAnimator());
         trailerLists = new ArrayList<>();
 
-
+        recyclerViewRV = findViewById(R.id.reviewsRV);
         recyclerViewRV.setHasFixedSize(false);
         recyclerViewRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewRV.setItemAnimator(new DefaultItemAnimator());
@@ -131,12 +128,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(imageB)
-                .placeholder(R.drawable.picasso)
                 .into(posterBannerIV);
 
         Picasso.with(this)
                 .load(image)
-                .placeholder(R.drawable.picasso)
                 .into(posterImageView);
 
         titleTextView.setText(titleText);
@@ -270,11 +265,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 mMovieDao.insert(movie);
                 setResult(RESULT_OK);
             } catch (SQLiteConstraintException e) {
-                Snackbar.make(v.getRootView(),"A movie with same details already exists.",Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(MovieDetailsActivity.this, "A movie with same details already exists.", Toast.LENGTH_SHORT).show();
             }
             favView.setImageResource(R.drawable.fav_fill);
             favTV.setVisibility(View.GONE);
-            Snackbar.make(v.getRootView(),"Added to favorites", Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(this,"Added to favorites", Toast.LENGTH_SHORT).show();
             isFavorite = true;
         }else {
             Movie movie = new Movie();
@@ -290,7 +285,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             favView.setImageResource(R.drawable.fav_empty);
 
             setResult(RESULT_OK);
-            Snackbar.make(v.getRootView(),"Removed from favorites", Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(this,"Removed from favorites", Toast.LENGTH_SHORT).show();
             isFavorite = false;
         }
     }

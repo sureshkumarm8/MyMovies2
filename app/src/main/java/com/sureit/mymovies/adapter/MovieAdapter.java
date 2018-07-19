@@ -1,8 +1,10 @@
 package com.sureit.mymovies.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // this method will be called whenever our ViewHolder is created
@@ -49,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
         // this method will bind the data to the ViewHolder from whence it'll be shown to other Views
 
@@ -57,6 +60,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         Picasso.with(context)
                 .load("https://image.tmdb.org/t/p/w185/"+(developersList.getPosterUrl()))
+                .placeholder(R.drawable.picasso)
                 .into(holder.poster_url);
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -88,20 +92,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieLists.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder  {
+    class ViewHolder extends RecyclerView.ViewHolder  {
 
         // define the View objects
 
-        public ImageView poster_url;
-        public RelativeLayout relativeLayout;
+        ImageView poster_url;
+        RelativeLayout relativeLayout;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
 
             // initialize the View objects
 
-            poster_url = (ImageView) itemView.findViewById(R.id.imageView);
-            relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutRV);
+            poster_url = itemView.findViewById(R.id.imageView);
+            relativeLayout = itemView.findViewById(R.id.relativeLayoutRV);
         }
 
     }

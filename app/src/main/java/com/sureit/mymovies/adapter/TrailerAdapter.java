@@ -50,6 +50,7 @@ public class TrailerAdapter extends RecyclerView.Adapter <TrailerAdapter.ViewHol
 
         Picasso.with(context)
                 .load(String.format(YOUTUBE_THUMBNAIL_URL, trailerLists.get(position).getTrailerKey()))
+                .placeholder(R.drawable.youtube)
                 .into(holder.videoViewTrailer);
 
         holder.relativeLayout2.setOnClickListener(new View.OnClickListener() {

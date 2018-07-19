@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,11 @@ import java.util.List;
 import am.appwise.components.ni.NoInternetDialog;
 
 import static com.sureit.mymovies.data.Constants.API_KEY;
+import static com.sureit.mymovies.data.Constants.POSTER_BASE_URL;
+import static com.sureit.mymovies.data.Constants.POSTER_BASE_URL2;
+import static com.sureit.mymovies.data.Constants.REVIEW_SEG;
+import static com.sureit.mymovies.data.Constants.TRAILERS_MOVIES_URL;
+import static com.sureit.mymovies.data.Constants.TRAILER_SEG;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MovieDetailsActivity";
@@ -117,8 +123,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         idVal = movieList.getId();
         final String titleText = movieList.getTitle();
-        String image = "https://image.tmdb.org/t/p/w185/"+ movieList.getPosterUrl();
-        String imageB = "https://image.tmdb.org/t/p/w342/"+ movieList.getPosterUrl();
+        String image = POSTER_BASE_URL+ movieList.getPosterUrl();
+        String imageB = POSTER_BASE_URL2+ movieList.getPosterUrl();
         final String descriptionText = movieList.getDescription();
         final String ratings =movieList.getVote_average()+" / 10";
         final String releaseDate= movieList.getReleaseDate();
@@ -160,7 +166,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         progressDialog.show();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET,
-                Constants.TRAILERS_MOVIES_URL+idVal+"/reviews?api_key="+API_KEY , new Response.Listener<String>() {
+                TRAILERS_MOVIES_URL+idVal+REVIEW_SEG+API_KEY , new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -209,7 +215,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         progressDialog.show();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET,
-                Constants.TRAILERS_MOVIES_URL+idVal+"/videos?api_key="+API_KEY , new Response.Listener<String>() {
+                TRAILERS_MOVIES_URL+idVal+TRAILER_SEG+API_KEY , new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -265,11 +271,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 mMovieDao.insert(movie);
                 setResult(RESULT_OK);
             } catch (SQLiteConstraintException e) {
-                Toast.makeText(MovieDetailsActivity.this, "A movie with same details already exists.", Toast.LENGTH_SHORT).show();
+                Snackbar.make(v.getRootView(), "A movie with same details already exists.", Snackbar.LENGTH_SHORT).show();
             }
             favView.setImageResource(R.drawable.fav_fill);
             favTV.setVisibility(View.GONE);
-            Toast.makeText(this,"Added to favorites", Toast.LENGTH_SHORT).show();
+            Snackbar.make(v.getRootView(),"Added to favorites", Snackbar.LENGTH_SHORT).show();
             isFavorite = true;
         }else {
             Movie movie = new Movie();
@@ -285,7 +291,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             favView.setImageResource(R.drawable.fav_empty);
 
             setResult(RESULT_OK);
-            Toast.makeText(this,"Removed from favorites", Toast.LENGTH_SHORT).show();
+            Snackbar.make(v.getRootView(),"Removed from favorites", Snackbar.LENGTH_SHORT).show();
             isFavorite = false;
         }
     }

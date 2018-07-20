@@ -6,6 +6,8 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.sureit.mymovies.data.MovieList;
+
 import java.util.List;
 
 /**
@@ -16,18 +18,18 @@ import java.util.List;
 public interface MovieDao {
 
     @Insert
-    void insert(Movie movie);
+    void insert(MovieList movie);
 
     @Update
-    void update(Movie... repos);
+    void update(MovieList... repos);
 
     @Delete
-    void delete(Movie movie);
+    void delete(MovieList movie);
 
     @Query("SELECT * FROM  moviesfav")
-    List<Movie> getMovies();
+     List<MovieList> getMovies();
 
-    @Query("SELECT * FROM moviesfav WHERE movie_id = :number")
+    @Query("SELECT * FROM moviesfav WHERE id = :number")
     boolean getMovieWithId(long number);
 
 }

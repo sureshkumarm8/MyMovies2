@@ -23,7 +23,6 @@ import com.sureit.mymovies.R;
 import com.sureit.mymovies.adapter.MovieAdapter;
 import com.sureit.mymovies.data.Constants;
 import com.sureit.mymovies.data.MovieList;
-import com.sureit.mymovies.db.Movie;
 import com.sureit.mymovies.db.MovieDao;
 import com.sureit.mymovies.db.MovieDatabase;
 
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieDatabase movieDatabase;
     private MovieDao mMovieDao;
-    private Movie movie;
+    private MovieList movie;
     private boolean update;
     private MovieList movieList;
 
@@ -131,17 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFavMovies() {
-        List<Movie> movies=new ArrayList<>(mMovieDao.getMovies());
-        for(int i=0;i<movies.size();i++){
-            Long id = movies.get(i).getMovie_id();
-            String title = movies.get(i).getTitle();
-            String description  = movies.get(i).getContent();
-            String posterPath = movies.get(i).getPosterUrl();
-            String vote_avg = movies.get(i).getVote_average();
-            String releaseDate = movies.get(i).getReleasedate();
-            MovieList movieList = new MovieList(id,title, description,posterPath,vote_avg ,releaseDate);
-            movieLists.add(movieList);
-        }
+        movieLists= mMovieDao.getMovies();
         adapter = new MovieAdapter(movieLists, getApplicationContext());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

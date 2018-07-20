@@ -29,7 +29,6 @@ import com.sureit.mymovies.data.Constants;
 import com.sureit.mymovies.data.MovieList;
 import com.sureit.mymovies.data.ReviewsList;
 import com.sureit.mymovies.data.TrailerList;
-import com.sureit.mymovies.db.Movie;
 import com.sureit.mymovies.db.MovieDao;
 import com.sureit.mymovies.db.MovieDatabase;
 
@@ -67,7 +66,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private MovieDatabase movieDatabase;
     private MovieDao mMovieDao;
-    private Movie movie;
+    private MovieList movie;
     private boolean update;
     private MovieList movieList;
     public static String stringT;
@@ -259,16 +258,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private void toggleFavorite(View v) {
 
         if (!isFavorite) {
-            Movie movie = new Movie();
-            movie.setTitle(movieList.getTitle());
-            movie.setContent(movieList.getDescription());
-            movie.setMovie_id(movieList.getId());
-            movie.setPosterUrl(movieList.getPosterUrl());
-            movie.setReleasedate(movieList.getReleaseDate());
-            movie.setVote_average(movieList.getVote_average());
+            MovieList movieListf = movieList;
+//            movie.setTitle(movieList.getTitle());
+//            movie.setContent(movieList.getDescription());
+//            movie.setMovie_id(movieList.getId());
+//            movie.setPosterUrl(movieList.getPosterUrl());
+//            movie.setReleasedate(movieList.getReleaseDate());
+//            movie.setVote_average(movieList.getVote_average());
             //Insert to database
             try {
-                mMovieDao.insert(movie);
+                mMovieDao.insert(movieListf);
                 setResult(RESULT_OK);
             } catch (SQLiteConstraintException e) {
                 Snackbar.make(v.getRootView(), "A movie with same details already exists.", Snackbar.LENGTH_SHORT).show();
@@ -278,15 +277,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Snackbar.make(v.getRootView(),"Added to favorites", Snackbar.LENGTH_SHORT).show();
             isFavorite = true;
         }else {
-            Movie movie = new Movie();
-            movie.setTitle(movieList.getTitle());
-            movie.setContent(movieList.getDescription());
-            movie.setMovie_id(movieList.getId());
-            movie.setPosterUrl(movieList.getPosterUrl());
-            movie.setReleasedate(movieList.getReleaseDate());
-            movie.setVote_average(movieList.getVote_average());
-            mMovieDao.delete(movie);
-            String id= String.valueOf(movie.getMovie_id());
+            MovieList movieListf = movieList;
+//            movie.setTitle(movieList.getTitle());
+//            movie.setContent(movieList.getDescription());
+//            movie.setMovie_id(movieList.getId());
+//            movie.setPosterUrl(movieList.getPosterUrl());
+//            movie.setReleasedate(movieList.getReleaseDate());
+//            movie.setVote_average(movieList.getVote_average());
+            mMovieDao.delete(movieListf);
+            String id= String.valueOf(movieListf.getId());
             favTV.setVisibility(View.VISIBLE);
             favView.setImageResource(R.drawable.fav_empty);
 

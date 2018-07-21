@@ -1,5 +1,6 @@
 package com.sureit.mymovies.db;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -27,7 +28,7 @@ public interface MovieDao {
     void delete(MovieList movie);
 
     @Query("SELECT * FROM  moviesfav")
-     List<MovieList> getMovies();
+    LiveData <List<MovieList>> getMovies();
 
     @Query("SELECT * FROM moviesfav WHERE id = :number")
     boolean getMovieWithId(long number);

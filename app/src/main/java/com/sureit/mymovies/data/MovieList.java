@@ -44,6 +44,15 @@ public class MovieList implements Parcelable {
 
     }
 
+    public MovieList(MovieList movieList) {
+        this.id = movieList.getId();
+        this.title = movieList.getTitle();
+        this.posterUrl = movieList.getPosterUrl();
+        this.description = movieList.getDescription();
+        this.vote_average = movieList.getVote_average();
+        this.releaseDate = movieList.getReleaseDate();
+    }
+
     public long getId() {
         return id;
     }

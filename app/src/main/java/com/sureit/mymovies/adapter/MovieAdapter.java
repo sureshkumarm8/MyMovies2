@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
-import com.sureit.mymovies.data.Constants;
+import com.sureit.mymovies.Util.Constants;
 import com.sureit.mymovies.view.MovieDetailsActivity;
 import com.sureit.mymovies.data.MovieList;
 import com.sureit.mymovies.R;
@@ -44,7 +44,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // this method will be called whenever our ViewHolder is created
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_item_card, parent, false);
@@ -90,6 +90,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public int getItemCount() {
         return movieLists.size();
+    }
+
+    public void setMoviesLive(List<MovieList> moviesLive) {
+        this.movieLists = moviesLive;
+    }
+
+    public List<MovieList> getMoviesLive() {
+        return movieLists;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder  {

@@ -1,9 +1,12 @@
 package com.sureit.mymovies.view;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,14 +26,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 import com.sureit.mymovies.R;
+import com.sureit.mymovies.Util.AppExecutors;
+import com.sureit.mymovies.Util.Constants;
+import com.sureit.mymovies.adapter.MovieAdapter;
 import com.sureit.mymovies.adapter.ReviewsAdapter;
 import com.sureit.mymovies.adapter.TrailerAdapter;
-import com.sureit.mymovies.data.Constants;
 import com.sureit.mymovies.data.MovieList;
 import com.sureit.mymovies.data.ReviewsList;
 import com.sureit.mymovies.data.TrailerList;
 import com.sureit.mymovies.db.MovieDao;
 import com.sureit.mymovies.db.MovieDatabase;
+import com.sureit.mymovies.db.MovieViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,12 +47,13 @@ import java.util.List;
 
 import am.appwise.components.ni.NoInternetDialog;
 
-import static com.sureit.mymovies.data.Constants.API_KEY;
-import static com.sureit.mymovies.data.Constants.POSTER_BASE_URL;
-import static com.sureit.mymovies.data.Constants.POSTER_BASE_URL2;
-import static com.sureit.mymovies.data.Constants.REVIEW_SEG;
-import static com.sureit.mymovies.data.Constants.TRAILERS_MOVIES_URL;
-import static com.sureit.mymovies.data.Constants.TRAILER_SEG;
+import static com.sureit.mymovies.Util.Constants.API_KEY;
+import static com.sureit.mymovies.Util.Constants.DB_NAME;
+import static com.sureit.mymovies.Util.Constants.POSTER_BASE_URL;
+import static com.sureit.mymovies.Util.Constants.POSTER_BASE_URL2;
+import static com.sureit.mymovies.Util.Constants.REVIEW_SEG;
+import static com.sureit.mymovies.Util.Constants.TRAILERS_MOVIES_URL;
+import static com.sureit.mymovies.Util.Constants.TRAILER_SEG;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MovieDetailsActivity";
@@ -76,7 +83,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, "db-movies")
+        mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, DB_NAME)
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build()
                 .getMovieDao();
@@ -255,46 +262,52 @@ public class MovieDetailsActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void toggleFavorite(View v) {
+    private void toggleFavorite(final View v) {
 
-        if (!isFavorite) {
-            MovieList movieListf = movieList;
-//            movie.setTitle(movieList.getTitle());
-//            movie.setContent(movieList.getDescription());
-//            movie.setMovie_id(movieList.getId());
-//            movie.setPosterUrl(movieList.getPosterUrl());
-//            movie.setReleasedate(movieList.getReleaseDate());
-//            movie.setVote_average(movieList.getVote_average());
-            //Insert to database
-            try {
-                mMovieDao.insert(movieListf);
-                setResult(RESULT_OK);
-            } catch (SQLiteConstraintException e) {
-                Snackbar.make(v.getRootView(), "A movie with same details already exists.", Snackbar.LENGTH_SHORT).show();
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!isFavorite) {
+                            // favorite new task
+                            try {
+                                mMovieDao.insert(movieList);
+//                            setResult(RESULT_OK);
+                            } catch (SQLiteConstraintException e) {
+                                Snackbar.make(v.getRootView(), "A movie with same details already exists.", Snackbar.LENGTH_SHORT).show();
+                            }
+                            favView.setImageResource(R.drawable.fav_fill);
+                            favTV.setVisibility(View.GONE);
+                            Snackbar.make(v.getRootView(),"Added to favorites", Snackbar.LENGTH_SHORT).show();
+                            isFavorite = true;
+                        } else {
+                            //unfavorite task
+                            mMovieDao.delete(movieList);
+                            favTV.setVisibility(View.VISIBLE);
+                            favView.setImageResource(R.drawable.fav_empty);
+                            setResult(RESULT_OK);
+                            Snackbar.make(v.getRootView(),"Removed from favorites", Snackbar.LENGTH_SHORT).show();
+                            isFavorite = false;
+                            setupViewModel();
+                        }
+                    }
+                });
             }
-            favView.setImageResource(R.drawable.fav_fill);
-            favTV.setVisibility(View.GONE);
-            Snackbar.make(v.getRootView(),"Added to favorites", Snackbar.LENGTH_SHORT).show();
-            isFavorite = true;
-        }else {
-            MovieList movieListf = movieList;
-//            movie.setTitle(movieList.getTitle());
-//            movie.setContent(movieList.getDescription());
-//            movie.setMovie_id(movieList.getId());
-//            movie.setPosterUrl(movieList.getPosterUrl());
-//            movie.setReleasedate(movieList.getReleaseDate());
-//            movie.setVote_average(movieList.getVote_average());
-            mMovieDao.delete(movieListf);
-            String id= String.valueOf(movieListf.getId());
-            favTV.setVisibility(View.VISIBLE);
-            favView.setImageResource(R.drawable.fav_empty);
+        });
 
-            setResult(RESULT_OK);
-            Snackbar.make(v.getRootView(),"Removed from favorites", Snackbar.LENGTH_SHORT).show();
-            isFavorite = false;
-        }
     }
 
+    private void setupViewModel() {
+        MovieViewModel viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        viewModel.getTasks().observe(this, new Observer<List<MovieList>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieList> taskEntries) {
+                new MovieAdapter(taskEntries,getApplicationContext());
+            }
+        });
+    }
 
 
     @Override

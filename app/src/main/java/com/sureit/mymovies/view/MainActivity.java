@@ -1,10 +1,14 @@
 package com.sureit.mymovies.view;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,10 +25,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.sureit.mymovies.R;
 import com.sureit.mymovies.adapter.MovieAdapter;
-import com.sureit.mymovies.data.Constants;
 import com.sureit.mymovies.data.MovieList;
 import com.sureit.mymovies.db.MovieDao;
 import com.sureit.mymovies.db.MovieDatabase;
+import com.sureit.mymovies.db.MovieViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,11 +39,13 @@ import java.util.List;
 
 import am.appwise.components.ni.NoInternetDialog;
 
-import static com.sureit.mymovies.data.Constants.API_KEY;
-import static com.sureit.mymovies.data.Constants.BASE_URL_MOVIE;
-import static com.sureit.mymovies.data.Constants.PARCEL_KEY;
-import static com.sureit.mymovies.data.Constants.POPULAR_MOVIES_URL;
-import static com.sureit.mymovies.data.Constants.TOP_RATED_MOVIES_URL;
+import static com.sureit.mymovies.Util.Constants.API_KEY;
+import static com.sureit.mymovies.Util.Constants.BASE_URL_MOVIE;
+import static com.sureit.mymovies.Util.Constants.DB_NAME;
+import static com.sureit.mymovies.Util.Constants.FAV_ROT;
+import static com.sureit.mymovies.Util.Constants.PARCEL_KEY;
+import static com.sureit.mymovies.Util.Constants.POPULAR_MOVIES_URL;
+import static com.sureit.mymovies.Util.Constants.TOP_RATED_MOVIES_URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,14 +53,10 @@ public class MainActivity extends AppCompatActivity {
     NoInternetDialog noInternetDialog;
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private MovieAdapter adapter;
     private List<MovieList> movieLists;
 
-    private MovieDatabase movieDatabase;
     private MovieDao mMovieDao;
-    private MovieList movie;
-    private boolean update;
-    private MovieList movieList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         movieLists = new ArrayList<>();
         noInternetDialog = new NoInternetDialog.Builder(this).build();
 
-        mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, "db-movies")
+        mMovieDao = Room.databaseBuilder(this, MovieDatabase.class, DB_NAME)
                 .allowMainThreadQueries()   //Allows room to do operation on main thread
                 .build()
                 .getMovieDao();
@@ -84,12 +86,11 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         }
-        if(!Constants.FAV_ROT){
+        if(FAV_ROT){
+            loadFavMovies();
+        }else {
             loadUrlData(BASE_URL_MOVIE);
-            Constants.FAV_ROT=false;
         }
-
-
     }
 
     @Override
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(true);
                 noInternetDialog = new NoInternetDialog.Builder(this).build();
                 movieLists.clear();
+                FAV_ROT = false;
                 loadUrlData(POPULAR_MOVIES_URL);
                 return true;
 
@@ -114,13 +116,14 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(true);
                 noInternetDialog = new NoInternetDialog.Builder(this).build();
                 movieLists.clear();
+                FAV_ROT = false;
                 loadUrlData(TOP_RATED_MOVIES_URL);
                 return true;
 
             case R.id.myfav:
                 item.setChecked(true);
                 movieLists.clear();
-                Constants.FAV_ROT = true;
+                FAV_ROT = true;
                 loadFavMovies();
                 return true;
 
@@ -129,11 +132,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadFavMovies() {
-        movieLists= mMovieDao.getMovies();
-        adapter = new MovieAdapter(movieLists, getApplicationContext());
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+    public void loadFavMovies() {
+        LiveData<List<MovieList>> movieListsL = mMovieDao.getMovies();
+        movieListsL.observe(this, new Observer<List<MovieList>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieList> movieLists) {
+                adapter.setMoviesLive(movieLists);
+                adapter = new MovieAdapter(adapter.getMoviesLive(), getApplicationContext());
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
@@ -194,6 +203,29 @@ public class MainActivity extends AppCompatActivity {
                 Parcelable>) movieLists);
     }
 
+    private void setupViewModel() {
+        MovieViewModel viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        viewModel.getTasks().observe(this, new Observer<List<MovieList>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieList> taskEntries) {
+                adapter.setMoviesLive(taskEntries);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(FAV_ROT){
+            loadFavMovies();
+        }
+    }
 
     @Override
     protected void onDestroy() {

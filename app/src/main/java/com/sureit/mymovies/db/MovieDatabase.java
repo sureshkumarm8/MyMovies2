@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.sureit.mymovies.Util.Constants;
 import com.sureit.mymovies.data.MovieList;
 
 /**
@@ -22,8 +23,7 @@ public abstract class MovieDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(
                     context.getApplicationContext(),
-                    MovieDatabase.class,
-                    "FavMovieDatabase.db")
+                    MovieDatabase.class, Constants.DB_NAME)
                     .build();
         }
 

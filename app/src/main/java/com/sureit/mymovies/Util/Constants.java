@@ -1,4 +1,4 @@
-package com.sureit.mymovies.data;
+package com.sureit.mymovies.Util;
 
 import com.sureit.mymovies.BuildConfig;
 
